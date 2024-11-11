@@ -1,0 +1,85 @@
+<html>
+<head>
+<title>tetris_game.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #7a7e85;}
+.s3 { color: #bcbec4;}
+.s4 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+tetris_game.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">pygame</span>
+<span class="s0">from </span><span class="s1">piece </span><span class="s0">import </span><span class="s1">Piece</span>
+
+<span class="s2"># Nustatymai</span>
+<span class="s1">COLUMNS </span><span class="s3">= </span><span class="s4">10</span>
+<span class="s1">ROWS </span><span class="s3">= </span><span class="s4">20</span>
+<span class="s1">BLOCK_SIZE </span><span class="s3">= </span><span class="s4">30</span>
+
+<span class="s0">class </span><span class="s1">TetrisGame</span><span class="s3">:</span>
+    <span class="s0">def </span><span class="s1">__init__</span><span class="s3">(</span><span class="s1">self</span><span class="s3">):</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">grid </span><span class="s3">= [[(</span><span class="s4">0</span><span class="s3">, </span><span class="s4">0</span><span class="s3">, </span><span class="s4">0</span><span class="s3">) </span><span class="s0">for </span><span class="s1">_ </span><span class="s0">in </span><span class="s1">range</span><span class="s3">(</span><span class="s1">COLUMNS</span><span class="s3">)] </span><span class="s0">for </span><span class="s1">_ </span><span class="s0">in </span><span class="s1">range</span><span class="s3">(</span><span class="s1">ROWS</span><span class="s3">)]</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">piece </span><span class="s3">= </span><span class="s1">Piece</span><span class="s3">(</span><span class="s1">COLUMNS</span><span class="s3">)</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">score </span><span class="s3">= </span><span class="s4">0</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">game_over </span><span class="s3">= </span><span class="s0">False</span>
+
+    <span class="s0">def </span><span class="s1">can_move</span><span class="s3">(</span><span class="s1">self</span><span class="s3">, </span><span class="s1">dx</span><span class="s3">, </span><span class="s1">dy</span><span class="s3">):</span>
+        <span class="s0">for </span><span class="s1">y</span><span class="s3">, </span><span class="s1">row </span><span class="s0">in </span><span class="s1">enumerate</span><span class="s3">(</span><span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">shape</span><span class="s3">):</span>
+            <span class="s0">for </span><span class="s1">x</span><span class="s3">, </span><span class="s1">cell </span><span class="s0">in </span><span class="s1">enumerate</span><span class="s3">(</span><span class="s1">row</span><span class="s3">):</span>
+                <span class="s0">if </span><span class="s1">cell</span><span class="s3">:</span>
+                    <span class="s1">nx</span><span class="s3">, </span><span class="s1">ny </span><span class="s3">= </span><span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">x </span><span class="s3">+ </span><span class="s1">x </span><span class="s3">+ </span><span class="s1">dx</span><span class="s3">, </span><span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">y </span><span class="s3">+ </span><span class="s1">y </span><span class="s3">+ </span><span class="s1">dy</span>
+                    <span class="s0">if </span><span class="s1">nx </span><span class="s3">&lt; </span><span class="s4">0 </span><span class="s0">or </span><span class="s1">nx </span><span class="s3">&gt;= </span><span class="s1">COLUMNS </span><span class="s0">or </span><span class="s1">ny </span><span class="s3">&gt;= </span><span class="s1">ROWS </span><span class="s0">or </span><span class="s1">self</span><span class="s3">.</span><span class="s1">grid</span><span class="s3">[</span><span class="s1">ny</span><span class="s3">][</span><span class="s1">nx</span><span class="s3">] != (</span><span class="s4">0</span><span class="s3">, </span><span class="s4">0</span><span class="s3">, </span><span class="s4">0</span><span class="s3">):</span>
+                        <span class="s0">return False</span>
+        <span class="s0">return True</span>
+
+    <span class="s0">def </span><span class="s1">move_piece</span><span class="s3">(</span><span class="s1">self</span><span class="s3">, </span><span class="s1">dx</span><span class="s3">, </span><span class="s1">dy</span><span class="s3">):</span>
+        <span class="s0">if </span><span class="s1">self</span><span class="s3">.</span><span class="s1">can_move</span><span class="s3">(</span><span class="s1">dx</span><span class="s3">, </span><span class="s1">dy</span><span class="s3">):</span>
+            <span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">x </span><span class="s3">+= </span><span class="s1">dx</span>
+            <span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">y </span><span class="s3">+= </span><span class="s1">dy</span>
+            <span class="s0">return True</span>
+        <span class="s0">return False</span>
+
+    <span class="s0">def </span><span class="s1">rotate_piece</span><span class="s3">(</span><span class="s1">self</span><span class="s3">):</span>
+        <span class="s1">old_shape </span><span class="s3">= </span><span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">shape</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">rotate</span><span class="s3">()</span>
+        <span class="s0">if not </span><span class="s1">self</span><span class="s3">.</span><span class="s1">can_move</span><span class="s3">(</span><span class="s4">0</span><span class="s3">, </span><span class="s4">0</span><span class="s3">):</span>
+            <span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">shape </span><span class="s3">= </span><span class="s1">old_shape  </span><span class="s2"># Atšaukiame sukimą, jei negalima</span>
+
+    <span class="s0">def </span><span class="s1">lock_piece</span><span class="s3">(</span><span class="s1">self</span><span class="s3">):</span>
+        <span class="s0">for </span><span class="s1">y</span><span class="s3">, </span><span class="s1">row </span><span class="s0">in </span><span class="s1">enumerate</span><span class="s3">(</span><span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">shape</span><span class="s3">):</span>
+            <span class="s0">for </span><span class="s1">x</span><span class="s3">, </span><span class="s1">cell </span><span class="s0">in </span><span class="s1">enumerate</span><span class="s3">(</span><span class="s1">row</span><span class="s3">):</span>
+                <span class="s0">if </span><span class="s1">cell</span><span class="s3">:</span>
+                    <span class="s1">self</span><span class="s3">.</span><span class="s1">grid</span><span class="s3">[</span><span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">y </span><span class="s3">+ </span><span class="s1">y</span><span class="s3">][</span><span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">x </span><span class="s3">+ </span><span class="s1">x</span><span class="s3">] = </span><span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">color</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">clear_lines</span><span class="s3">()</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">piece </span><span class="s3">= </span><span class="s1">Piece</span><span class="s3">(</span><span class="s1">COLUMNS</span><span class="s3">)</span>
+        <span class="s0">if not </span><span class="s1">self</span><span class="s3">.</span><span class="s1">can_move</span><span class="s3">(</span><span class="s4">0</span><span class="s3">, </span><span class="s4">0</span><span class="s3">):</span>
+            <span class="s1">self</span><span class="s3">.</span><span class="s1">game_over </span><span class="s3">= </span><span class="s0">True</span>
+
+    <span class="s0">def </span><span class="s1">clear_lines</span><span class="s3">(</span><span class="s1">self</span><span class="s3">):</span>
+        <span class="s1">new_grid </span><span class="s3">= [</span><span class="s1">row </span><span class="s0">for </span><span class="s1">row </span><span class="s0">in </span><span class="s1">self</span><span class="s3">.</span><span class="s1">grid </span><span class="s0">if </span><span class="s1">any</span><span class="s3">(</span><span class="s1">cell </span><span class="s3">== (</span><span class="s4">0</span><span class="s3">, </span><span class="s4">0</span><span class="s3">, </span><span class="s4">0</span><span class="s3">) </span><span class="s0">for </span><span class="s1">cell </span><span class="s0">in </span><span class="s1">row</span><span class="s3">)]</span>
+        <span class="s1">cleared </span><span class="s3">= </span><span class="s1">ROWS </span><span class="s3">- </span><span class="s1">len</span><span class="s3">(</span><span class="s1">new_grid</span><span class="s3">)</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">score </span><span class="s3">+= </span><span class="s1">cleared </span><span class="s3">* </span><span class="s4">100</span>
+        <span class="s0">for </span><span class="s1">_ </span><span class="s0">in </span><span class="s1">range</span><span class="s3">(</span><span class="s1">cleared</span><span class="s3">):</span>
+            <span class="s1">new_grid</span><span class="s3">.</span><span class="s1">insert</span><span class="s3">(</span><span class="s4">0</span><span class="s3">, [(</span><span class="s4">0</span><span class="s3">, </span><span class="s4">0</span><span class="s3">, </span><span class="s4">0</span><span class="s3">) </span><span class="s0">for </span><span class="s1">_ </span><span class="s0">in </span><span class="s1">range</span><span class="s3">(</span><span class="s1">COLUMNS</span><span class="s3">)])</span>
+        <span class="s1">self</span><span class="s3">.</span><span class="s1">grid </span><span class="s3">= </span><span class="s1">new_grid</span>
+
+    <span class="s0">def </span><span class="s1">draw_grid</span><span class="s3">(</span><span class="s1">self</span><span class="s3">, </span><span class="s1">screen</span><span class="s3">):</span>
+        <span class="s0">for </span><span class="s1">y</span><span class="s3">, </span><span class="s1">row </span><span class="s0">in </span><span class="s1">enumerate</span><span class="s3">(</span><span class="s1">self</span><span class="s3">.</span><span class="s1">grid</span><span class="s3">):</span>
+            <span class="s0">for </span><span class="s1">x</span><span class="s3">, </span><span class="s1">color </span><span class="s0">in </span><span class="s1">enumerate</span><span class="s3">(</span><span class="s1">row</span><span class="s3">):</span>
+                <span class="s1">pygame</span><span class="s3">.</span><span class="s1">draw</span><span class="s3">.</span><span class="s1">rect</span><span class="s3">(</span><span class="s1">screen</span><span class="s3">, </span><span class="s1">color</span><span class="s3">, (</span><span class="s1">x </span><span class="s3">* </span><span class="s1">BLOCK_SIZE</span><span class="s3">, </span><span class="s1">y </span><span class="s3">* </span><span class="s1">BLOCK_SIZE</span><span class="s3">, </span><span class="s1">BLOCK_SIZE</span><span class="s3">, </span><span class="s1">BLOCK_SIZE</span><span class="s3">), </span><span class="s4">0</span><span class="s3">)</span>
+
+    <span class="s0">def </span><span class="s1">draw_piece</span><span class="s3">(</span><span class="s1">self</span><span class="s3">, </span><span class="s1">screen</span><span class="s3">):</span>
+        <span class="s0">for </span><span class="s1">y</span><span class="s3">, </span><span class="s1">row </span><span class="s0">in </span><span class="s1">enumerate</span><span class="s3">(</span><span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">shape</span><span class="s3">):</span>
+            <span class="s0">for </span><span class="s1">x</span><span class="s3">, </span><span class="s1">cell </span><span class="s0">in </span><span class="s1">enumerate</span><span class="s3">(</span><span class="s1">row</span><span class="s3">):</span>
+                <span class="s0">if </span><span class="s1">cell</span><span class="s3">:</span>
+                    <span class="s1">pygame</span><span class="s3">.</span><span class="s1">draw</span><span class="s3">.</span><span class="s1">rect</span><span class="s3">(</span><span class="s1">screen</span><span class="s3">, </span><span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">color</span><span class="s3">, ((</span><span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">x </span><span class="s3">+ </span><span class="s1">x</span><span class="s3">) * </span><span class="s1">BLOCK_SIZE</span><span class="s3">, (</span><span class="s1">self</span><span class="s3">.</span><span class="s1">piece</span><span class="s3">.</span><span class="s1">y </span><span class="s3">+ </span><span class="s1">y</span><span class="s3">) * </span><span class="s1">BLOCK_SIZE</span><span class="s3">, </span><span class="s1">BLOCK_SIZE</span><span class="s3">, </span><span class="s1">BLOCK_SIZE</span><span class="s3">), </span><span class="s4">0</span><span class="s3">)</span></pre>
+</body>
+</html>
